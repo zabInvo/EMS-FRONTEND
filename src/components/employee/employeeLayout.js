@@ -23,6 +23,7 @@ import { Link } from "react-router-dom";
 import { blue } from "@mui/material/colors";
 import { useDispatch } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const drawerWidth = 240;
 
@@ -92,10 +93,17 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function EmployeeLayout() {
+  const employee = localStorage.getItem("employeeToken");
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const router = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!employee) {
+      router("/");
+    }
+  }, [employee]);
 
   const handleDrawerOpen = () => {
     setOpen(true);

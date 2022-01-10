@@ -26,7 +26,7 @@ import { Link } from "react-router-dom";
 import { blue } from "@mui/material/colors";
 import { useDispatch } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
-
+import { useEffect } from "react";
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -96,6 +96,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function MiniDrawer() {
   const theme = useTheme();
+  const admin = localStorage.getItem("adminToken");
   const [open, setOpen] = React.useState(false);
   const router = useNavigate();
   const dispatch = useDispatch();
@@ -139,6 +140,12 @@ export default function MiniDrawer() {
     router("/admin/login");
     dispatch({ type: "ADMIN_LOGOUT_REQUEST" });
   }
+
+  useEffect(() => {
+    if (!admin) {
+      router("/admin/login");
+    }
+  }, [admin]);
 
   return (
     <Box sx={{ display: "flex" }}>
