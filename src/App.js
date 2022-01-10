@@ -17,7 +17,7 @@ import EmployeeLayout from "./components/employee/employeeLayout";
 import EmployeeDashboard from "./components/employee/dashboard";
 import EmployeeSetting from "./components/employee/setting";
 import EmployeeAttendanceTable from "./components/employee/attendance";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import { forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -47,12 +47,29 @@ function App() {
     dispatch({ type: "CLEAR_SNACKBAR_REQUEST", snackPayload });
   };
 
+  function RequireAdminAuth({ children, redirectTo }) {
+    let isAuthenticated = localStorage.getItem("adminToken");
+    return isAuthenticated ? children : <Navigate to={redirectTo} />;
+  }
+
+  function RequireEmployeeAuth({ children, redirectTo }) {
+    let isAuthenticated = localStorage.getItem("employeeToken");
+    return isAuthenticated ? children : <Navigate to={redirectTo} />;
+  }
+
   return (
     <>
       <Routes>
         {/* EMPLOYEE ROUTES */}
         <Route path="/" element={<EmployeeLogin />} />
-        <Route path="/" element={<EmployeeLayout />}>
+        <Route
+          path="/"
+          element={
+            <RequireEmployeeAuth redirectTo="/">
+              <EmployeeLayout />
+            </RequireEmployeeAuth>
+          }
+        >
           <Route path="dashboard" element={<EmployeeDashboard />} />
           <Route path="attendance" element={<EmployeeAttendanceTable />} />
           <Route path="setting" element={<EmployeeSetting />} />
@@ -60,7 +77,15 @@ function App() {
 
         {/* ADMIN ROUTES */}
         <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin" element={<AdminLayout />}>
+
+        <Route
+          path="/admin"
+          element={
+            <RequireAdminAuth redirectTo="/admin/login">
+              <AdminLayout />
+            </RequireAdminAuth>
+          }
+        >
           <Route index element={<AdminLayout />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="company" element={<Companies />} />
