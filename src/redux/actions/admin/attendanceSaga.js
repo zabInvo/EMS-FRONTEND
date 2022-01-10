@@ -1,6 +1,7 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 
 import { SET_ATTENDANCE } from "../../reducers/admin/attendanceReducer";
+import { SET_SNACKBAR } from "../../reducers/admin/snackbarReducer";
 import service from "../../../services/axiosService";
 
 const fetchAttendanceApi = async () => {
@@ -29,7 +30,9 @@ const createAttendanceApi = async (data) => {
     console.log(attendance.data.message);
     return attendance.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response.data.message ? error.response.data.message : error
+    );
   }
 };
 
@@ -49,9 +52,22 @@ function* createAttendance(data) {
     const attendance = yield call(createAttendanceApi, data);
     if (attendance) {
       yield call(fetchAttendance);
+      const snackPayload = {
+        status: true,
+        type: "success",
+        message: attendance.message,
+        error: false,
+      };
+      yield put(SET_SNACKBAR(snackPayload));
     }
   } catch (error) {
-    console.log(error);
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
   }
 }
 

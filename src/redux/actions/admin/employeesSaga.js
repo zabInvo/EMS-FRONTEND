@@ -1,6 +1,8 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 
 import { SET_EMPLOYEES } from "../../reducers/admin/employeesReducers";
+import { SET_SNACKBAR } from "../../reducers/admin/snackbarReducer";
+
 import service from "../../../services/axiosService";
 
 const fetchEmployeesApi = async () => {
@@ -29,7 +31,9 @@ const createEmployeesApi = async (data) => {
     console.log(employees.data.message);
     return employees.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response.data.error ? error.response.data.error : error
+    );
   }
 };
 
@@ -43,7 +47,9 @@ const deleteEmployeeApi = async (data) => {
     console.log(employees.data.message);
     return employees.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response.data.error ? error.response.data.error : error
+    );
   }
 };
 
@@ -60,23 +66,50 @@ function* fetchEmployees() {
 
 function* createEmployees(data) {
   try {
-    const employees = yield call(createEmployeesApi,data);
+    const employees = yield call(createEmployeesApi, data);
     if (employees) {
-      yield  call(fetchEmployees);
+      yield call(fetchEmployees);
+      const snackPayload = {
+        status: true,
+        type: "success",
+        message: employees.message,
+        error: false,
+      };
+      yield put(SET_SNACKBAR(snackPayload));
     }
   } catch (error) {
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
     console.log(error);
   }
 }
 
 function* deleteEmployee(data) {
   try {
-    const employees = yield call(deleteEmployeeApi,data);
+    const employees = yield call(deleteEmployeeApi, data);
     if (employees) {
-      yield  call(fetchEmployees);
+      yield call(fetchEmployees);
+      const snackPayload = {
+        status: true,
+        type: "success",
+        message: employees.message,
+        error: false,
+      };
+      yield put(SET_SNACKBAR(snackPayload));
     }
   } catch (error) {
-    console.log(error);
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
   }
 }
 

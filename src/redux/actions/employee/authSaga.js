@@ -1,11 +1,11 @@
 import { call, put, takeLatest, takeEvery } from "redux-saga/effects";
+import { SET_SNACKBAR } from "../../reducers/admin/snackbarReducer";
 
 import {
   LOGIN_EMPLOYEE,
   LOGOUT_EMPLOYEE,
 } from "../../reducers/employee/loginReducer";
 import service from "../../../services/axiosService";
-import { CollectionsOutlined } from "@mui/icons-material";
 
 const loginApi = async (data) => {
   try {
@@ -17,7 +17,9 @@ const loginApi = async (data) => {
     );
     return login.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response.data.error ? error.response.data.error : error
+    );
   }
 };
 
@@ -31,7 +33,9 @@ const updatePasswordApi = async (data) => {
     console.log(updatePassword.data.message);
     return updatePassword.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response.data.message ? error.response.data.message : error
+    );
   }
 };
 
@@ -40,8 +44,22 @@ function* login(data) {
     const token = yield call(loginApi, data);
     if (token) {
       yield put(LOGIN_EMPLOYEE(token));
+      const snackPayload = {
+        status: true,
+        type: "success",
+        message: token.message,
+        error: false,
+      };
+      yield put(SET_SNACKBAR(snackPayload));
     }
   } catch (error) {
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
     console.log(error);
   }
 }
@@ -58,8 +76,22 @@ function* logout() {
 function* updatePassword(data) {
   try {
     const updatePassword = yield call(updatePasswordApi, data);
-    CollectionsOutlined.log(updatePassword);
+
+    const snackPayload = {
+      status: true,
+      type: "success",
+      message: updatePassword.message,
+      error: false,
+    };
+    yield put(SET_SNACKBAR(snackPayload));
   } catch (error) {
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
     console.log(error);
   }
 }

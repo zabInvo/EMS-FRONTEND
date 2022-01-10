@@ -86,7 +86,7 @@ function CollapsibleTable(props) {
 function Attendance() {
   const dispatch = useDispatch();
   const attendance = useSelector((state) =>
-    state.attendanceReducer.attendance
+    state.attendanceReducer.attendance.length > 1
       ? state.attendanceReducer.attendance
       : [{}]
   );

@@ -32,7 +32,6 @@ function AdminLogin() {
     } catch (error) {
       console.log("this is error", error);
       setLoading(false);
-
     }
   }
 

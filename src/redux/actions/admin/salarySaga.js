@@ -1,6 +1,8 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 
 import { SET_SALARIES } from "../../reducers/admin/salaryReducer";
+import { SET_SNACKBAR } from "../../reducers/admin/snackbarReducer";
+
 import service from "../../../services/axiosService";
 
 const fetchSalariesApi = async () => {
@@ -29,7 +31,9 @@ const createSalaryApi = async (data) => {
     console.log(employees.data.message);
     return employees.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response.data.error ? error.response.data.error : error
+    );
   }
 };
 
@@ -43,7 +47,9 @@ const updateSalaryApi = async (data) => {
     console.log(employees.data.message);
     return employees.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response.data.error ? error.response.data.error : error
+    );
   }
 };
 
@@ -63,8 +69,22 @@ function* createSalary(data) {
     const salaries = yield call(createSalaryApi, data);
     if (salaries) {
       yield call(fetchSalaries);
+      const snackPayload = {
+        status: true,
+        type: "success",
+        message: salaries.message,
+        error: false,
+      };
+      yield put(SET_SNACKBAR(snackPayload));
     }
   } catch (error) {
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
     console.log(error);
   }
 }
@@ -74,8 +94,22 @@ function* updateSalary(data) {
     const salaries = yield call(updateSalaryApi, data);
     if (salaries) {
       yield call(fetchSalaries);
+      const snackPayload = {
+        status: true,
+        type: "success",
+        message: salaries.message,
+        error: false,
+      };
+      yield put(SET_SNACKBAR(snackPayload));
     }
   } catch (error) {
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
     console.log(error);
   }
 }

@@ -1,4 +1,5 @@
 import { call, put, takeLatest } from "redux-saga/effects";
+import { SET_SNACKBAR } from "../../reducers/admin/snackbarReducer";
 
 import {
   SET_COMPANIES,
@@ -28,7 +29,9 @@ const createCompanyApi = async (data) => {
     console.log(companies.data.message);
     return companies.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response.data.error ? error.response.data.error : error
+    );
   }
 };
 
@@ -42,7 +45,9 @@ const deleteCompanyApi = async (data) => {
     console.log(companies.data.message);
     return companies.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response.data.error ? error.response.data.error : error
+    );
   }
 };
 
@@ -56,7 +61,9 @@ const updateCompanyApi = async (data) => {
     console.log(companies.data.message);
     return companies.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response.data.error ? error.response.data.error : error
+    );
   }
 };
 
@@ -76,8 +83,22 @@ function* createCompany(data) {
     const companies = yield call(createCompanyApi, data);
     if (companies) {
       yield call(fetchCompanies);
+      const snackPayload = {
+        status: true,
+        type: "success",
+        message: companies.message,
+        error: false,
+      };
+      yield put(SET_SNACKBAR(snackPayload));
     }
   } catch (error) {
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
     console.log(error);
   }
 }
@@ -87,9 +108,22 @@ function* deleteCompany(data) {
     const companies = yield call(deleteCompanyApi, data);
     if (companies) {
       yield call(fetchCompanies);
+      const snackPayload = {
+        status: true,
+        type: "success",
+        message: companies.message,
+        error: false,
+      };
+      yield put(SET_SNACKBAR(snackPayload));
     }
   } catch (error) {
-    console.log(error);
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
   }
 }
 
@@ -98,9 +132,22 @@ function* updateCompany(data) {
     const companies = yield call(updateCompanyApi, data);
     if (companies) {
       yield call(fetchCompanies);
+      const snackPayload = {
+        status: true,
+        type: "success",
+        message: companies.message,
+        error: false,
+      };
+      yield put(SET_SNACKBAR(snackPayload));
     }
   } catch (error) {
-    console.log(error);
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
   }
 }
 

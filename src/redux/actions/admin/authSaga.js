@@ -2,6 +2,7 @@ import { call, put, takeLatest, takeEvery } from "redux-saga/effects";
 
 import { LOGIN_ADMIN, LOGOUT_ADMIN } from "../../reducers/admin/loginReducer";
 import service from "../../../services/axiosService";
+import { SET_SNACKBAR } from "../../reducers/admin/snackbarReducer";
 
 const loginApi = async (data) => {
   try {
@@ -10,7 +11,9 @@ const loginApi = async (data) => {
     localStorage.setItem("adminToken", JSON.stringify(login.data.token));
     return login.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response.data.error ? error.response.data.error : error
+    );
   }
 };
 
@@ -24,7 +27,9 @@ const updatePasswordApi = async (data) => {
     console.log(updatePassword.data.message);
     return updatePassword.data;
   } catch (error) {
-    console.log(error);
+    throw new Error(
+      error.response.data.message ? error.response.data.message : error
+    );
   }
 };
 
@@ -33,9 +38,22 @@ function* login(data) {
     const token = yield call(loginApi, data);
     if (token) {
       yield put(LOGIN_ADMIN(token));
+      const snackPayload = {
+        status: true,
+        type: "success",
+        message: token.message,
+        error: false,
+      };
+      yield put(SET_SNACKBAR(snackPayload));
     }
   } catch (error) {
-    console.log(error);
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
   }
 }
 
@@ -52,8 +70,22 @@ function* updatePassword(data) {
   try {
     const updatePassword = yield call(updatePasswordApi, data);
     console.log(updatePassword);
+    const snackPayload = {
+      status: true,
+      type: "success",
+      message: updatePassword.message,
+      error: false,
+    };
+    yield put(SET_SNACKBAR(snackPayload));
   } catch (error) {
     console.log(error);
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
   }
 }
 
