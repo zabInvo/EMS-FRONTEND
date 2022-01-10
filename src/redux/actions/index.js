@@ -8,6 +8,7 @@ import employeesAuthSaga from "./employee/authSaga";
 import dashboardSaga from './employee/dashboardSaga'
 import employeeAttendanceSaga from "./employee/attendanceSaga";
 import snackbarSaga from "./admin/snackbarSaga";
+import adminDashboardSaga from "./admin/dashboardSaga";
 
 // ADD MULTIPLE SAGA
 function* rootSaga() {
@@ -20,6 +21,7 @@ function* rootSaga() {
     employeesAuthSaga(),
     dashboardSaga(),
     employeeAttendanceSaga(),
+    adminDashboardSaga(),
     snackbarSaga()
   ]);
 }

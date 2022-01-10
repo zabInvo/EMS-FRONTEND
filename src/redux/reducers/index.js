@@ -7,6 +7,7 @@ import attendanceReducer from "./admin/attendanceReducer";
 import employeeLoginReducer from "./employee/loginReducer";
 import dashboardReducer from "./employee/dashboardReducer";
 import employeeAttendanceReducer from "./employee/attendanceReducer";
+import adminDashboardReducer from "./admin/dashboardReducer";
 import snackbarReducer from "./admin/snackbarReducer";
 
 const reducer = combineReducers({
@@ -18,7 +19,8 @@ const reducer = combineReducers({
   employeeLoginReducer: employeeLoginReducer,
   employeeDashboardReducer: dashboardReducer,
   employeeAttendanceReducer: employeeAttendanceReducer,
-  snackbarReducer: snackbarReducer
+  adminDashboardReducer: adminDashboardReducer,
+  snackbarReducer: snackbarReducer,
 });
 
 export default reducer;

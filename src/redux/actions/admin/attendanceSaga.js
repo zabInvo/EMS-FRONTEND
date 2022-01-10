@@ -4,10 +4,10 @@ import { SET_ATTENDANCE } from "../../reducers/admin/attendanceReducer";
 import { SET_SNACKBAR } from "../../reducers/admin/snackbarReducer";
 import service from "../../../services/axiosService";
 
-const fetchAttendanceApi = async () => {
+const fetchAttendanceApi = async (data) => {
   try {
     const payload = {
-      companyId: 18,
+      companyId: data.currentCompany,
     };
     const attendance = await service.post(
       "attendance/getAllAttendance",
@@ -36,9 +36,9 @@ const createAttendanceApi = async (data) => {
   }
 };
 
-function* fetchAttendance() {
+function* fetchAttendance(data) {
   try {
-    const attendance = yield call(fetchAttendanceApi);
+    const attendance = yield call(fetchAttendanceApi, data);
     if (attendance) {
       yield put(SET_ATTENDANCE(attendance));
     }

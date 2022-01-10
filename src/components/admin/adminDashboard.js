@@ -7,19 +7,35 @@ import Typography from "@mui/material/Typography";
 import { blue } from "@mui/material/colors";
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+
+import AdminCurrentCompanyDialog from "./adminCompanyDialog";
 
 function AdminDashboard() {
   const router = useNavigate();
   const dispatch = useDispatch();
-  const setCurrentCompany = () => {
-    const currentCompanyId = 18;
-    dispatch({ type: "SET_CURRENT_COMPANIES_REQUEST", currentCompanyId });
-  }
+  const [showModal, setShowModal] = useState(true);
+  const companies = useSelector((state) =>
+    state.adminDashboardReducer.companies
+      ? state.adminDashboardReducer.companies
+      : 0
+  );
+  const admin = useSelector((state) =>
+    state.adminDashboardReducer.admins ? state.adminDashboardReducer.admins : 0
+  );
+  const employees = useSelector((state) =>
+    state.adminDashboardReducer.employees
+      ? state.adminDashboardReducer.employees
+      : 0
+  );
   useEffect(() => {
-    setCurrentCompany();
-  }, [])
+    dispatch({ type: "FETCH_ALL_COMPANIES_REQUEST" });
+  }, []);
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
   return (
     <div>
       <Grid container>
@@ -43,7 +59,7 @@ function AdminDashboard() {
                     color: blue["A400"],
                   }}
                 >
-                  3
+                  {companies}
                 </Typography>
               </CardContent>
               <CardActions>
@@ -74,7 +90,7 @@ function AdminDashboard() {
                     color: blue["A400"],
                   }}
                 >
-                  5
+                  {employees}
                 </Typography>
               </CardContent>
               <CardActions>
@@ -105,7 +121,7 @@ function AdminDashboard() {
                     color: blue["A400"],
                   }}
                 >
-                  2
+                  {admin}
                 </Typography>
               </CardContent>
               <CardActions>
@@ -114,6 +130,7 @@ function AdminDashboard() {
             </Card>
           </Box>
         </Grid>
+        <AdminCurrentCompanyDialog isOpen={showModal} toggle={toggleModal} />
       </Grid>
     </div>
   );

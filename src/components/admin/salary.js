@@ -50,8 +50,13 @@ function SalaryTable() {
   const data = useSelector((state) =>
     state.salaryReducer.salaries ? state.salaryReducer.salaries : []
   );
+  const currentCompany = useSelector((state) =>
+    state.companyReducer.currentCompany
+      ? state.companyReducer.currentCompany
+      : null
+  );
   useEffect(() => {
-    dispatch({ type: "FETCH_SALARIES_REQUEST" });
+    dispatch({ type: "FETCH_SALARIES_REQUEST" , currentCompany});
   }, []);
 
   useEffect(() => {

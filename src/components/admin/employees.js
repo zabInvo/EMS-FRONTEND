@@ -22,8 +22,13 @@ export default function Employees() {
   const employees = useSelector((state) =>
     state.employeesReducers.employees ? state.employeesReducers.employees : []
   );
+  const currentCompany = useSelector((state) =>
+    state.companyReducer.currentCompany
+      ? state.companyReducer.currentCompany
+      : null
+  );
   useEffect(() => {
-    dispatch({ type: "FETCH_ALL_EMPLOYEES_REQUEST" });
+    dispatch({ type: "FETCH_ALL_EMPLOYEES_REQUEST", currentCompany });
   }, []);
 
   const toggleModal = () => {

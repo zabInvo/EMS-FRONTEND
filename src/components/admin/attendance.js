@@ -126,8 +126,13 @@ function Attendance() {
       }
     }
   };
+  const currentCompany = useSelector((state) =>
+    state.companyReducer.currentCompany
+      ? state.companyReducer.currentCompany
+      : null
+  );
   useEffect(() => {
-    dispatch({ type: "FETCH_ATTENDANCE_REQUEST" });
+    dispatch({ type: "FETCH_ATTENDANCE_REQUEST", currentCompany });
   }, []);
   if (Object.keys(attendance[0]).length !== 0) {
     return (

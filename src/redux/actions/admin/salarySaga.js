@@ -5,10 +5,10 @@ import { SET_SNACKBAR } from "../../reducers/admin/snackbarReducer";
 
 import service from "../../../services/axiosService";
 
-const fetchSalariesApi = async () => {
+const fetchSalariesApi = async (data) => {
   try {
     const payload = {
-      companyId: 18,
+      companyId: data.currentCompany,
     };
     const employees = await service.post(
       "salary/getAllSalary",
@@ -53,9 +53,9 @@ const updateSalaryApi = async (data) => {
   }
 };
 
-function* fetchSalaries() {
+function* fetchSalaries(data) {
   try {
-    const salaries = yield call(fetchSalariesApi);
+    const salaries = yield call(fetchSalariesApi, data);
     if (salaries) {
       yield put(SET_SALARIES(salaries));
     }
