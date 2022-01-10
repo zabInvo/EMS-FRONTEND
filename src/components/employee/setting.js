@@ -1,107 +1,103 @@
-import Logo from "../../applogo.png";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import LoadingButton from "@mui/lab/LoadingButton";
-import LoginIcon from "@mui/icons-material/Login";
 import { blue } from "@mui/material/colors";
 import Paper from "@mui/material/Paper";
-import { useDispatch, useSelector } from "react-redux";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import Avatar from "@mui/material/Avatar";
+import dummyUser from "../../dummyUser.png";
 
-function EmployeeLogin() {
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import IconButton from "@mui/material/IconButton";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+
+function EmployeeSetting() {
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const dispatch = useDispatch();
-  const router = useNavigate();
-  const AuthUser = useSelector((state) =>
-    state.employeeLoginReducer.login ? state.employeeLoginReducer.login : false
-  );
-  function loginUser() {
+  function changePassword() {
     setLoading(true);
     const payload = {
-      email,
-      password,
+      oldPassword,
+      newPassword,
     };
     try {
-      dispatch({ type: "EMPLOYEE_LOGIN_REQUEST", data: payload });
+      dispatch({ type: "EMPLOYEE_UPDATE_PASSWORD_REQUEST", payload });
       setLoading(false);
     } catch (error) {
-      console.log("this is error", error);
       setLoading(false);
-
+      console.log("this is error", error);
     }
   }
-  
-  useEffect(() => {
-    console.log("this is auth state", AuthUser);
-    if (AuthUser === true) {
-      router("/dashboard");
-    }
-  }, [AuthUser]);
+  useEffect(() => {}, []);
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <Paper elevation={10} sx={{ p: 2, mt: 2 }}>
         <Grid container>
-          <Grid item xs={12}>
-            <Typography
-              variant="h4"
-              gutterBottom
-              component="div"
-              sx={{ mt: 3, color: blue["A400"] }}
-            >
-              Employee Management System
-            </Typography>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <img className="App-logo" src={Logo} alt="logo" />
-            </div>
-          </Grid>
-        </Grid>
-        <Grid container>
           <Grid item xs={12} sx={{ p: 1, m: 1, mt: 3 }}>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <Typography
-                variant="h4"
+                variant="h5"
                 gutterBottom
                 component="div"
                 sx={{ color: blue["A400"] }}
               >
-                LOGIN.
+                Update Profile
               </Typography>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: 20,
+              }}
+            >
+              {" "}
+              <Avatar alt="" src={dummyUser} sx={{ width: 120, height: 120 }} />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: 10,
+              }}
+            >
+              <IconButton color="primary">
+                <CloudUploadIcon color="primary" fontSize="large" />
+              </IconButton>
             </div>
 
             <div style={{ display: "flex", justifyContent: "center" }}>
               <TextField
-                id="email"
-                label="Email"
+                id="oldPassword"
+                label="Old Password"
                 variant="outlined"
+                type="password"
                 sx={{ m: 1, width: "35ch" }}
-                onChange={(event) => setEmail(event.target.value)}
+                onChange={(event) => setOldPassword(event.target.value)}
               />
             </div>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <TextField
-                id="password"
+                id="newPassword"
                 sx={{ m: 1, mt: 2, width: "35ch" }}
-                label="Password"
+                label="New Password"
                 variant="outlined"
                 type="password"
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={(event) => setNewPassword(event.target.value)}
               />
             </div>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <LoadingButton
-                onClick={loginUser}
-                endIcon={<LoginIcon />}
+                onClick={changePassword}
                 loading={loading}
-                loadingPosition="end"
                 variant="contained"
                 sx={{ mt: 2 }}
               >
-                Login
+                Update Password
               </LoadingButton>
             </div>
           </Grid>
@@ -111,4 +107,4 @@ function EmployeeLogin() {
   );
 }
 
-export default EmployeeLogin;
+export default EmployeeSetting;

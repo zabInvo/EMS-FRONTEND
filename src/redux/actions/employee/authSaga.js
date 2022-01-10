@@ -1,13 +1,20 @@
 import { call, put, takeLatest, takeEvery } from "redux-saga/effects";
 
-import { LOGIN_ADMIN, LOGOUT_ADMIN } from "../../reducers/admin/loginReducer";
+import {
+  LOGIN_EMPLOYEE,
+  LOGOUT_EMPLOYEE,
+} from "../../reducers/employee/loginReducer";
 import service from "../../../services/axiosService";
+import { CollectionsOutlined } from "@mui/icons-material";
 
 const loginApi = async (data) => {
   try {
     const payload = data.data;
-    const login = await service.post("admin/login", "", payload);
-    localStorage.setItem("adminToken", JSON.stringify(login.data.token));
+    const login = await service.post("employee/login", "", payload);
+    localStorage.setItem(
+      "employeeToken",
+      JSON.stringify(login.data.user.token)
+    );
     return login.data;
   } catch (error) {
     console.log(error);
@@ -17,8 +24,8 @@ const loginApi = async (data) => {
 const updatePasswordApi = async (data) => {
   try {
     const updatePassword = await service.post(
-      "admin/updatePassword",
-      JSON.parse(localStorage.getItem("adminToken")),
+      "employee/updatePassword",
+      JSON.parse(localStorage.getItem("employeeToken")),
       data.payload
     );
     console.log(updatePassword.data.message);
@@ -32,16 +39,16 @@ function* login(data) {
   try {
     const token = yield call(loginApi, data);
     if (token) {
-      yield put(LOGIN_ADMIN(token));
+      yield put(LOGIN_EMPLOYEE(token));
     }
   } catch (error) {
     console.log(error);
   }
 }
 
-function* logout(data) {
+function* logout() {
   try {
-    yield put(LOGOUT_ADMIN());
+    yield put(LOGOUT_EMPLOYEE());
     localStorage.clear();
   } catch (error) {
     console.log(error);
@@ -51,16 +58,16 @@ function* logout(data) {
 function* updatePassword(data) {
   try {
     const updatePassword = yield call(updatePasswordApi, data);
-    console.log(updatePassword);
+    CollectionsOutlined.log(updatePassword);
   } catch (error) {
     console.log(error);
   }
 }
 
-function* adminSaga() {
-  yield takeLatest("ADMIN_LOGIN_REQUEST", login);
-  yield takeEvery("ADMIN_LOGOUT_REQUEST", logout);
-  yield takeEvery("UPDATE_PASSWORD_REQUEST", updatePassword);
+function* employeeSaga() {
+  yield takeLatest("EMPLOYEE_LOGIN_REQUEST", login);
+  yield takeEvery("EMPLOYEE_LOGOUT_REQUEST", logout);
+  yield takeEvery("EMPLOYEE_UPDATE_PASSWORD_REQUEST", updatePassword);
 }
 
-export default adminSaga;
+export default employeeSaga;

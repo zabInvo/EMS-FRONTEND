@@ -9,13 +9,18 @@ import Paper from "@mui/material/Paper";
 
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const AuthUser = useSelector((state) =>
+    state.adminlogin.login ? state.adminlogin.login : false
+  );
   const dispatch = useDispatch();
-  async function loginUser() {
+  const router = useNavigate();
+  function loginUser() {
     setLoading(true);
     const payload = {
       email,
@@ -23,10 +28,20 @@ function AdminLogin() {
     };
     try {
       dispatch({ type: "ADMIN_LOGIN_REQUEST", data: payload });
+      setLoading(false);
     } catch (error) {
       console.log("this is error", error);
+      setLoading(false);
+
     }
   }
+
+  useEffect(() => {
+    console.log("this is auth state", AuthUser);
+    if (AuthUser === true) {
+      router("/admin/dashboard");
+    }
+  }, [AuthUser]);
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
