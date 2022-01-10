@@ -16,6 +16,8 @@ import { blue } from "@mui/material/colors";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { Grid, Button } from "@mui/material";
+import ImportExportIcon from "@mui/icons-material/ImportExport";
+import _ from "lodash";
 
 import CreateAttendanceDialog from "./createAttendanceDialog";
 
@@ -85,7 +87,9 @@ function CollapsibleTable(props) {
 
 function Attendance() {
   const dispatch = useDispatch();
-  const attendance = useSelector((state) =>
+  const [attendance, setAttendance] = useState([{}]);
+  const [sorting, setSorting] = useState("desc");
+  const data = useSelector((state) =>
     state.attendanceReducer.attendance.length > 1
       ? state.attendanceReducer.attendance
       : [{}]
@@ -93,6 +97,34 @@ function Attendance() {
   const [showModal, setShowModal] = useState(false);
   const toggleModal = () => {
     setShowModal(!showModal);
+  };
+
+  useEffect(() => {
+    setAttendance(data);
+  }, [data]);
+
+  const sort = (column) => {
+    if (column === "name") {
+      if (sorting === "desc") {
+        let sorting = _.orderBy(attendance, ["name"], ["asc"]);
+        setAttendance(sorting);
+        setSorting("asc");
+      } else {
+        let sorting = _.orderBy(attendance, ["name"], ["desc"]);
+        setAttendance(sorting);
+        setSorting("desc");
+      }
+    } else {
+      if (sorting === "desc") {
+        let sorting = _.orderBy(attendance, ["email"], ["asc"]);
+        setAttendance(sorting);
+        setSorting("asc");
+      } else {
+        let sorting = _.orderBy(attendance, ["email"], ["desc"]);
+        setAttendance(sorting);
+        setSorting("desc");
+      }
+    }
   };
   useEffect(() => {
     dispatch({ type: "FETCH_ATTENDANCE_REQUEST" });
@@ -102,7 +134,9 @@ function Attendance() {
       <Grid container>
         <Grid item xs={12} sx={{ mt: 3, mb: 3 }}>
           <div style={{ display: "flex", justifyContent: "end" }}>
-            <Button variant="contained" onClick={toggleModal}>Create Attendance</Button>
+            <Button variant="contained" onClick={toggleModal}>
+              Create Attendance
+            </Button>
           </div>
         </Grid>
         <TableContainer component={Paper}>
@@ -110,9 +144,29 @@ function Attendance() {
             <TableHead sx={{ backgroundColor: blue["900"] }}>
               <TableRow>
                 <TableCell />
-                <TableCell sx={{ color: "white" }}>Employee Name</TableCell>
+                <TableCell sx={{ color: "white" }}>
+                  <div style={{ display: "flex", mt: 1 }}>
+                    Employee Name{" "}
+                    <IconButton
+                      onClick={() => {
+                        sort("name");
+                      }}
+                      sx={{ color: "white", mt: -1 }}
+                    >
+                      <ImportExportIcon />
+                    </IconButton>
+                  </div>{" "}
+                </TableCell>
                 <TableCell align="center" sx={{ color: "white" }}>
                   Email
+                  <IconButton
+                    onClick={() => {
+                      sort("email");
+                    }}
+                    sx={{ color: "white", mt: -1 }}
+                  >
+                    <ImportExportIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -123,7 +177,7 @@ function Attendance() {
             </TableBody>
           </Table>
         </TableContainer>
-        <CreateAttendanceDialog isOpen={showModal} toggle={toggleModal}/>
+        <CreateAttendanceDialog isOpen={showModal} toggle={toggleModal} />
       </Grid>
     );
   } else {
@@ -134,10 +188,10 @@ function Attendance() {
         >
           No Data Available
         </div>
-        <CreateAttendanceDialog isOpen={showModal} toggle={toggleModal}/>
+        <CreateAttendanceDialog isOpen={showModal} toggle={toggleModal} />
       </>
     );
-  }  
+  }
 }
 
 export default Attendance;

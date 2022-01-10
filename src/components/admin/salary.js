@@ -9,7 +9,10 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { blue } from "@mui/material/colors";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import ImportExportIcon from "@mui/icons-material/ImportExport";
 import Grid from "@mui/material/Grid";
+import _ from "lodash";
 
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -40,15 +43,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function SalaryTable() {
   const [showModal, setShowModal] = useState(false);
   const [showCreateSalaryModal, setShowCreateSalaryModal] = useState(false);
-
+  const [salaries, setSalaries] = useState([]);
+  const [sorting, setSorting] = useState("desc");
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const dispatch = useDispatch();
-  const salaries = useSelector((state) =>
+  const data = useSelector((state) =>
     state.salaryReducer.salaries ? state.salaryReducer.salaries : []
   );
   useEffect(() => {
     dispatch({ type: "FETCH_SALARIES_REQUEST" });
   }, []);
+
+  useEffect(() => {
+    setSalaries(data);
+  }, [data]);
 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -60,6 +68,30 @@ function SalaryTable() {
 
   const setEmployee = (item) => {
     setSelectedEmployee(item);
+  };
+
+  const sort = (column) => {
+    if (column === "name") {
+      if (sorting === "desc") {
+        let sorting = _.orderBy(salaries, ["name"], ["asc"]);
+        setSalaries(sorting);
+        setSorting("asc");
+      } else {
+        let sorting = _.orderBy(salaries, ["name"], ["desc"]);
+        setSalaries(sorting);
+        setSorting("desc");
+      }
+    } else {
+      if (sorting === "desc") {
+        let sorting = _.orderBy(salaries, ["Salary.amount"], ["asc"]);
+        setSalaries(sorting);
+        setSorting("asc");
+      } else {
+        let sorting = _.orderBy(salaries, ["Salary.amount"], ["desc"]);
+        setSalaries(sorting);
+        setSorting("desc");
+      }
+    }
   };
 
   return (
@@ -80,9 +112,29 @@ function SalaryTable() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>Employee Name</StyledTableCell>
+              <StyledTableCell>
+                Employee Name
+                <IconButton
+                  onClick={() => {
+                    sort("name");
+                  }}
+                  sx={{ color: "white", mt: -1 }}
+                >
+                  <ImportExportIcon />
+                </IconButton>
+              </StyledTableCell>
               <StyledTableCell align="center">Email</StyledTableCell>
-              <StyledTableCell align="center">Salary</StyledTableCell>
+              <StyledTableCell align="center">
+                Salary
+                <IconButton
+                  onClick={() => {
+                    sort("salary");
+                  }}
+                  sx={{ color: "white", mt: -1 }}
+                >
+                  <ImportExportIcon />
+                </IconButton>
+              </StyledTableCell>
               <StyledTableCell align="center">Edit</StyledTableCell>
             </TableRow>
           </TableHead>
