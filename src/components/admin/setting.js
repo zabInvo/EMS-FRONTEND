@@ -16,6 +16,7 @@ function AdminSetting() {
   const [loading, setLoading] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [image, setImage] = useState("");
   const AuthUser = useSelector((state) =>
     state.adminlogin.login ? state.adminlogin.login : false
   );
@@ -34,6 +35,16 @@ function AdminSetting() {
       console.log("this is error", error);
     }
   }
+
+  const onFileChange = (event) => {
+    setImage(event.target.files[0]);
+  };
+
+  const uploadImage = () => {
+    const formData = new FormData();
+    formData.append("adminImage", image);
+    dispatch({ type: "UPDATE_PROFILE_IMAGE_REQUEST", formData });
+  };
 
   useEffect(() => {}, [AuthUser]);
 
@@ -60,7 +71,23 @@ function AdminSetting() {
               }}
             >
               {" "}
-              <Avatar alt="" src={dummyUser} sx={{ width: 120, height: 120 }} />
+              <Avatar alt="" src={'http://localhost:3000/api/admin/fetchImage/1'} sx={{ width: 120, height: 120 }} />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: 20,
+                marginLeft: 70,
+              }}
+            >
+              <input
+                type="file"
+                name="file"
+                onChange={(event) => {
+                  onFileChange(event);
+                }}
+              />
             </div>
             <div
               style={{
@@ -69,7 +96,7 @@ function AdminSetting() {
                 marginBottom: 10,
               }}
             >
-              <IconButton color="primary">
+              <IconButton color="primary" onClick={uploadImage}>
                 <CloudUploadIcon color="primary" fontSize="large" />
               </IconButton>
             </div>

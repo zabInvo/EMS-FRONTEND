@@ -17,6 +17,21 @@ const loginApi = async (data) => {
   }
 };
 
+const uploadImageApi = async (data) => {
+  try {
+    const uploadImage = await service.post(
+      "admin/uploadImage",
+      JSON.parse(localStorage.getItem("adminToken")),
+      data.formData
+    );    
+    return uploadImage.data;
+  } catch (error) {
+    throw new Error(
+      error.response.data.message ? error.response.data.message : error
+    );
+  }
+};
+
 const updatePasswordApi = async (data) => {
   try {
     const updatePassword = await service.post(
@@ -89,10 +104,33 @@ function* updatePassword(data) {
   }
 }
 
+function* uploadImage(data) {
+  try {
+    const updatePassword = yield call(uploadImageApi, data);
+    const snackPayload = {
+      status: true,
+      type: "success",
+      message: updatePassword.message,
+      error: false,
+    };
+    yield put(SET_SNACKBAR(snackPayload));
+  } catch (error) {
+    console.log(error);
+    const snackPayloadError = {
+      status: true,
+      type: "error",
+      message: error.toString(),
+      error: true,
+    };
+    yield put(SET_SNACKBAR(snackPayloadError));
+  }
+}
+
 function* adminSaga() {
   yield takeLatest("ADMIN_LOGIN_REQUEST", login);
   yield takeEvery("ADMIN_LOGOUT_REQUEST", logout);
   yield takeEvery("UPDATE_PASSWORD_REQUEST", updatePassword);
+  yield takeEvery("UPDATE_PROFILE_IMAGE_REQUEST", uploadImage);
 }
 
 export default adminSaga;
