@@ -10,11 +10,13 @@ import Paper from "@mui/material/Paper";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { register, handleSubmit, errors } = useForm();
   const AuthUser = useSelector((state) =>
     state.adminlogin.login ? state.adminlogin.login : false
   );
@@ -60,52 +62,79 @@ function AdminLogin() {
             </div>
           </Grid>
         </Grid>
-        <Grid container>
-          <Grid item xs={12} sx={{ p: 1, m: 1, mt: 3 }}>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <Typography
-                variant="h4"
-                gutterBottom
-                component="div"
-                sx={{ color: blue["A400"] }}
-              >
-                LOGIN.
-              </Typography>
-            </div>
+        <form onSubmit={handleSubmit(loginUser)}>
+          <Grid container>
+            <Grid item xs={12} sx={{ p: 1, m: 1, mt: 3 }}>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Typography
+                  variant="h4"
+                  gutterBottom
+                  component="div"
+                  sx={{ color: blue["A400"] }}
+                >
+                  LOGIN.
+                </Typography>
+              </div>
 
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <TextField
-                id="email"
-                label="Email"
-                variant="outlined"
-                sx={{ m: 1, width: "35ch" }}
-                onChange={(event) => setEmail(event.target.value)}
-              />
-            </div>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <TextField
-                id="password"
-                sx={{ m: 1, mt: 2, width: "35ch" }}
-                label="Password"
-                variant="outlined"
-                type="password"
-                onChange={(event) => setPassword(event.target.value)}
-              />
-            </div>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <LoadingButton
-                onClick={loginUser}
-                endIcon={<LoginIcon />}
-                loading={loading}
-                loadingPosition="end"
-                variant="contained"
-                sx={{ mt: 2 }}
-              >
-                Login
-              </LoadingButton>
-            </div>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <TextField
+                  id="email"
+                  label="Email"
+                  variant="outlined"
+                  name="email"
+                  sx={{ m: 1, width: "35ch" }}
+                  autoComplete="off"
+                  onChange={(event) => setEmail(event.target.value)}
+                  inputRef={register({
+                    required: {
+                      value: true,
+                      message: "E-mail Address is required.",
+                    },
+                    pattern: {
+                      value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
+                      message: "Invalid Email Address",
+                    },
+                  })}
+                  error={Boolean(errors.email)}
+                  helperText={errors.email?.message}
+                />
+              </div>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <TextField
+                  id="password"
+                  sx={{ m: 1, mt: 2, width: "35ch" }}
+                  label="Password"
+                  name="password"
+                  variant="outlined"
+                  autoComplete="off"
+                  type="password"
+                  onChange={(event) => setPassword(event.target.value)}
+                  inputRef={register({
+                    required: {
+                      value: true,
+                      message: "Password is required.",
+                    },
+                  })}
+                  error={Boolean(errors.password)}
+                  helperText={errors.password?.message}
+                />
+              </div>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <LoadingButton
+                  // onClick={loginUser}
+                  type="submit"
+                  endIcon={<LoginIcon />}
+                  loading={loading}
+                  loadingPosition="end"
+                  variant="contained"
+                  sx={{ mt: 2 }}
+                >
+                  Login
+                </LoadingButton>
+              </div>
+            </Grid>
           </Grid>
-        </Grid>
+        </form>
       </Paper>
     </div>
   );

@@ -6,11 +6,13 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
 
 function CreateEmployeeDialog(props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { register, handleSubmit, errors } = useForm();
   const dispatch = useDispatch();
   const currentCompany = useSelector((state) =>
     state.companyReducer.currentCompany
@@ -36,52 +38,81 @@ function CreateEmployeeDialog(props) {
         maxWidth="sm"
       >
         <DialogTitle>Create New Employee</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            type="email"
-            fullWidth
-            value={name}
-            variant="standard"
-            onChange={(event) => setName(event.target.value)}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="email"
-            label="Email"
-            type="email"
-            value={email}
-            fullWidth
-            variant="standard"
-            onChange={(event) => setEmail(event.target.value)}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="password"
-            label="Password"
-            type="password"
-            value={password}
-            fullWidth
-            variant="standard"
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              createEmployee();
-              props.toggle();
-            }}
-          >
-            Create
-          </Button>
-          <Button onClick={props.toggle}>Cancel</Button>
-        </DialogActions>
+        <form onSubmit={handleSubmit(createEmployee)}>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Name"
+              autoComplete="off"
+              name="name"
+              fullWidth
+              variant="standard"
+              onChange={(event) => setName(event.target.value)}
+              inputRef={register({
+                required: {
+                  value: true,
+                  message: "Name is required.",
+                },
+              })}
+              error={Boolean(errors.name)}
+              helperText={errors.name?.message}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="email"
+              label="Email"
+              autoComplete="off"
+              name="email"
+              fullWidth
+              variant="standard"
+              onChange={(event) => setEmail(event.target.value)}
+              inputRef={register({
+                required: {
+                  value: true,
+                  message: "E-mail Address is required.",
+                },
+                pattern: {
+                  value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
+                  message: "Invalid Email Address",
+                },
+              })}
+              error={Boolean(errors.email)}
+              helperText={errors.email?.message}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="password"
+              label="Password"
+              autoComplete="off"
+              name="password"
+              type="password"
+              fullWidth
+              variant="standard"
+              onChange={(event) => setPassword(event.target.value)}
+              inputRef={register({
+                required: {
+                  value: true,
+                  message: "Password is required.",
+                },
+                min: {
+                  value: 6,
+                  message:
+                    "Password must be greater than equal to 6 characters.",
+                },
+              })}
+              error={Boolean(errors.password)}
+              helperText={errors.password?.message}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button type="submit">Create</Button>
+            <Button onClick={props.toggle}>Cancel</Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </div>
   );
