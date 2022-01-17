@@ -1,7 +1,9 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, takeLatest , select } from "redux-saga/effects";
 
 import { SET_ATTENDANCE } from "../../reducers/admin/attendanceReducer";
 import { SET_SNACKBAR } from "../../reducers/admin/snackbarReducer";
+import {getCurrentCompany} from "../../reducers/admin/companyReducer"
+
 import service from "../../../services/axiosService";
 
 const fetchAttendanceApi = async (data) => {
@@ -51,7 +53,8 @@ function* createAttendance(data) {
   try {
     const attendance = yield call(createAttendanceApi, data);
     if (attendance) {
-      yield call(fetchAttendance);
+      let company = yield select(getCurrentCompany);
+      yield call(fetchAttendance,company);
       const snackPayload = {
         status: true,
         type: "success",

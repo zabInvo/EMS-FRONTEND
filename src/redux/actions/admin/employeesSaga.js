@@ -1,7 +1,8 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, takeLatest , select } from "redux-saga/effects";
 
 import { SET_EMPLOYEES } from "../../reducers/admin/employeesReducers";
 import { SET_SNACKBAR } from "../../reducers/admin/snackbarReducer";
+import {getCurrentCompany} from "../../reducers/admin/companyReducer"
 
 import service from "../../../services/axiosService";
 
@@ -68,7 +69,8 @@ function* createEmployees(data) {
   try {
     const employees = yield call(createEmployeesApi, data);
     if (employees) {
-      yield call(fetchEmployees);
+      let company = yield select(getCurrentCompany);
+      yield call(fetchEmployees,company);
       const snackPayload = {
         status: true,
         type: "success",
@@ -93,7 +95,8 @@ function* deleteEmployee(data) {
   try {
     const employees = yield call(deleteEmployeeApi, data);
     if (employees) {
-      yield call(fetchEmployees);
+      let company = yield select(getCurrentCompany);
+      yield call(fetchEmployees,company);
       const snackPayload = {
         status: true,
         type: "success",

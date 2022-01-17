@@ -1,4 +1,3 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -16,7 +15,7 @@ import { blue } from "@mui/material/colors";
 import Checkbox from "@mui/material/Checkbox";
 import moment from "moment";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({

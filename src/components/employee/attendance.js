@@ -1,4 +1,3 @@
-import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -8,7 +7,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { blue } from "@mui/material/colors";
-import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 
 import { useState, useEffect } from "react";
@@ -35,10 +33,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function EmployeeAttendanceTable() {
-  const [showModal, setShowModal] = useState(false);
-  const [showCreateSalaryModal, setShowCreateSalaryModal] = useState(false);
-
-  const [selectedEmployee, setSelectedEmployee] = useState("");
   const dispatch = useDispatch();
   const attendance = useSelector((state) =>
     state.employeeAttendanceReducer.attendance
@@ -48,18 +42,6 @@ function EmployeeAttendanceTable() {
   useEffect(() => {
     dispatch({ type: "FETCH_USER_ATTENDANCE_REQUEST" });
   }, []);
-
-  const toggleModal = () => {
-    setShowModal(!showModal);
-  };
-
-  const toggleCreateSalaryModal = () => {
-    setShowCreateSalaryModal(!showCreateSalaryModal);
-  };
-
-  const setEmployee = (item) => {
-    setSelectedEmployee(item);
-  };
 
   return (
     <Grid container>

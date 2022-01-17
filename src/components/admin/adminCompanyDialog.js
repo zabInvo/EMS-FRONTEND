@@ -32,7 +32,7 @@ function AdminCurrentCompanyDialog(props) {
         <DialogTitle id="alert-dialog-title">
           {"Please Select Company First."}
         </DialogTitle>
-        <DialogContent sx={{ display: "flex", justifyContent: "Center" }}>
+        <DialogContent sx={{ display: "flex-column", justifyContent: "Center" }}>
           {companies.map((item, index) => (
             <Card
               key={index}

@@ -5,7 +5,6 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { blue } from "@mui/material/colors";
 import Paper from "@mui/material/Paper";
 import Avatar from "@mui/material/Avatar";
-import dummyUser from "../../dummyUser.png";
 
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -71,7 +70,7 @@ function AdminSetting() {
               }}
             >
               {" "}
-              <Avatar alt="" src={'http://localhost:3000/api/admin/fetchImage/1'} sx={{ width: 120, height: 120 }} />
+              <Avatar src={'http://localhost:3000/api/admin/fetchImage/1'} sx={{ width: 120, height: 120 }} />
             </div>
             <div
               style={{

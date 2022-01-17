@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+export const initialState = {
   companies: [],
   currentCompany: null,
 };
@@ -19,4 +19,5 @@ const companyReducer = createSlice({
 });
 
 export const { SET_COMPANIES, SET_CURRENT_COMPANIES } = companyReducer.actions;
+export const getCurrentCompany = (state) => state.companyReducer;
 export default companyReducer.reducer;
